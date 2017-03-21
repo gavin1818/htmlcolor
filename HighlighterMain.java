@@ -15,9 +15,8 @@ public class HighlighterMain {
         String url="";
 		while(true){
 			if(choice.startsWith("s")){
-				//System.out.print("file name(blank for empty): ");
-				url = "/Users/Gavinhehe/Documents/CodingSkills/java/capitalone/test4.html";
-				//console.nextLine().trim();
+				System.out.print("file name(blank for empty): ");
+				url = console.nextLine().trim();
                 if ( url.length() > 0 ) {
                     try {
 		                pageText = readCompleteFileOrURL( url );
