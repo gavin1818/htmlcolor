@@ -1,4 +1,3 @@
-// EECE 210 MP2: HTML Validator
 // You should not modify this file!
 // You should read the code here to understand how the HtmlTag class is
 // implemented.

@@ -22,8 +22,6 @@ public class HighlighterMain {
 		                pageText = readCompleteFileOrURL( url );
 		                Queue<HtmlTag> tags = HtmlTag.tokenize( pageText );
 		                Highlighter highlighter = new Highlighter(pageText,tags);
-		                System.out.println(highlighter.highlight());//test
-		                
 		            } catch ( FileNotFoundException fnfe ) {
 		                System.out.println( "Web page or file not found: "
 		                        + url );

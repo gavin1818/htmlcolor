@@ -3,7 +3,6 @@ import java.util.EmptyStackException;
 
 public class TagStack {
     // An ArrayList to hold HtmlTag objects.
-    // Use this to implement StackMP2.
     private ArrayList<HtmlTag> stack_internal;
 
     public int StackSize; // monitor size of stack
