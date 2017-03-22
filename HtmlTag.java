@@ -1,7 +1,3 @@
-// You should not modify this file!
-// You should read the code here to understand how the HtmlTag class is
-// implemented.
-
 import java.util.*;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,13 +7,23 @@ import java.util.Set;
 public class HtmlTag {
     // fields
     private final String element;
-    public final boolean isOpenTag;
+    private final boolean isOpenTag;
+    private static final HashMap<String, String> colorHashMap;
+    static{
+        colorHashMap = new HashMap<String, String>();
+        colorHashMap.put("html","redhtml");
+        colorHashMap.put("head","yellowhead");
+        colorHashMap.put("title","greentitle");
+        colorHashMap.put("body","turquoisebody");
+        colorHashMap.put("h1","darkgreenh1");
+    }
     /**
      * Constructs an HTML "opening" tag with the given element (e.g. "table").
      * Throws a NullPointerException if element is null.
      */
     public HtmlTag(String element) {
         this( element, true );
+        constructColorMatch();
     }
 
     /**
@@ -29,6 +35,7 @@ public class HtmlTag {
     public HtmlTag(String element, boolean isOpenTag) {
         this.element = element.toLowerCase();
         this.isOpenTag = isOpenTag;
+        constructColorMatch();
     }
 
     /**
@@ -82,13 +89,8 @@ public class HtmlTag {
         return "<" + ( isOpenTag ? "" : "/" )
                 + ( element.equals( "!--" ) ? "!-- --" : element ) + ">";
     }
+    // match the corresponding color.
     public String colorMatch(){
-        HashMap<String, String> colorHashMap = new HashMap<>();
-        colorHashMap.put("html","redhtml");
-        colorHashMap.put("head","yellowhead");
-        colorHashMap.put("title","greentitle");
-        colorHashMap.put("body","turquoisebody");
-        colorHashMap.put("h1","darkgreenh1");
         String ele= this.getElement();
         if(colorHashMap.containsKey(ele))
             return "\\color["+colorHashMap.get(ele).toUpperCase()+"]";
