@@ -20,7 +20,7 @@ public class Highlighter {
     	while(!tagQueue.isEmpty()){
     		//tagQueue contains all tags(open,close,selfclose) from tokenized html.
     		HtmlTag currentTag=tagQueue.poll();
-			String currentTagPattern = "<[ ]*"+currentTag.getElement()+"[^>]*>";
+			String currentTagPattern = "<[ ]*[/]?[ ]*"+currentTag.getElement()+"[^>]*>";
 			Pattern currentTagPatternPattern = Pattern.compile(currentTagPattern);
 			Matcher currentTagMatcher = currentTagPatternPattern.matcher(htmlText);
     		if(currentTag.isOpenTag()){
@@ -50,6 +50,7 @@ public class Highlighter {
 						}
 					}
 				}
+			//if the currentTag is closing.
 			}else{
 				myStack.pop();//if the currentTag is closing, pop() its correspoding openTag from Stack.
 				/*if tagQueue is not empty, it means there is at least one more open tag is in mystack, and 
@@ -63,7 +64,8 @@ public class Highlighter {
 						if(currentTagMatcher.find()){
 							int currentTagEndIndex = currentTagMatcher.end();
 							//insert color tag right after the '>' of currentTag.
-							htmlText.insert(currentTagEndIndex, myStack.peek().colorMatch());
+							//String str =  currentTag.isOpenTag()?"Opne"+myStack.peek().colorMatch():"Closeing"+myStack.peek().colorMatch();
+							htmlText.insert(currentTagEndIndex,myStack.peek().colorMatch());//issue!
 							resultStr+=htmlText.substring(0,currentTagEndIndex);
 							htmlText.delete(0,currentTagEndIndex);
 						}
@@ -74,6 +76,9 @@ public class Highlighter {
 							htmlText.delete(0,currentTagEndIndex);
 						}
 					}
+				//if current tag is the last one.
+				}else{
+					resultStr+=htmlText;
 				}
 			}
 		}
