@@ -6,7 +6,7 @@ import java.util.regex.*;
 public class Highlighter {
  	private Queue<HtmlTag> tagQueue;    
     private StringBuilder htmlText = new StringBuilder();
-    public String resultStr;
+    private String resultStr;
     //public StringBuilder validatedTag = new StringBuilder();
     // Constructors
     public Highlighter(String str, Queue<HtmlTag> tagQueue) throws IllegalArgumentException{
@@ -15,48 +15,63 @@ public class Highlighter {
     }
 
     public String highlight() {
+    	/*myStack is only used to store openTag(not including self-closing tag)*/
     	TagStack myStack = new TagStack();
     	while(!tagQueue.isEmpty()){
+    		//tagQueue contains all tags(open,close,selfclose) from tokenized html.
     		HtmlTag currentTag=tagQueue.poll();
 			String currentTagPattern = "<[ ]*"+currentTag.getElement()+"[^>]*>";
 			Pattern currentTagPatternPattern = Pattern.compile(currentTagPattern);
 			Matcher currentTagMatcher = currentTagPatternPattern.matcher(htmlText);
     		if(currentTag.isOpenTag()){
-    			if(!currentTag.isSelfClosing())
+    			if(!currentTag.isSelfClosing()){
+    				//it tag is not slefClose && not closing tag, push it on myStack. 
     				myStack.push(currentTag);
-
+    			}
 				if(currentTagMatcher.find()){
+					//find index of the '<' in the current tag.
 					int currentTagStartIndex = currentTagMatcher.start();
-					htmlText.insert(currentTagStartIndex, currentTag.colorMatch());//currentTagStartIndex如果是0怎么解决？？
+					htmlText.insert(currentTagStartIndex, currentTag.colorMatch());
+					//find index of the '>' in the current tag.
 					int currentTagEndIndex = currentTagMatcher.end();
 					resultStr+=htmlText.substring(0,currentTagEndIndex);
-					htmlText=new StringBuilder(htmlText.substring(currentTagEndIndex));
-					HtmlTag nextTag = tagQueue.poll();
-	    			String nextTagPattern = "<[ ]*[/]?[ ]*"+nextTag.getElement()+"[^>]>";
-					Pattern nextTagPatternPattern = Pattern.compile(nextTagPattern);
-					Matcher nextTagMatcher = nextTagPatternPattern.matcher(htmlText);//有错误
-					if(nextTagMatcher.find()){
-						int nextTagStartIndex = nextTagMatcher.start();//有错误
-						resultStr+=htmlText.substring(0,nextTagStartIndex);
-						htmlText=new StringBuilder(htmlText.substring(nextTagStartIndex+1));
+					htmlText.delete(0,currentTagEndIndex);
+					/*find the next tag's '>', and add the string before the '>' into resultStr, 
+					and remove it from htmlText */
+					if(!tagQueue.isEmpty()){
+						HtmlTag nextTag = tagQueue.peek();//gai
+	    				String nextTagPattern = "<[ ]*[/]?[ ]*"+nextTag.getElement()+"[^>]*>";
+						Pattern nextTagPatternPattern = Pattern.compile(nextTagPattern);
+						Matcher nextTagMatcher = nextTagPatternPattern.matcher(htmlText);
+						if(nextTagMatcher.find()){
+							int nextTagStartIndex = nextTagMatcher.start();
+							resultStr+=htmlText.substring(0,nextTagStartIndex);
+							htmlText.delete(0,nextTagStartIndex);
+						}
 					}
 				}
 			}else{
-				myStack.pop();//if the currentTag is closing, pop() its correspoding openTag from Stack		
+				myStack.pop();//if the currentTag is closing, pop() its correspoding openTag from Stack.
+				/*if tagQueue is not empty, it means there is at least one more open tag is in mystack, and 
+				its conresponding closing tag still havent be handled. so we use the HtmlTag nextTag to parse it.
+				*/		
 				if(!tagQueue.isEmpty()){
 					HtmlTag nextTag = tagQueue.peek();
-					if(!nextTag.isOpenTag()){//if the next tag is closing tag or no more tag
+					/*if the nextTag is closing tag or no more tag, find current tag's '>', becuase
+					the nextTag's corresponding color tag will be insert reight after the currentTag. */
+					if(!nextTag.isOpenTag()){
 						if(currentTagMatcher.find()){
 							int currentTagEndIndex = currentTagMatcher.end();
+							//insert color tag right after the '>' of currentTag.
 							htmlText.insert(currentTagEndIndex, myStack.peek().colorMatch());
-							resultStr+=htmlText.substring(0,currentTagEndIndex-1);
-							htmlText=new StringBuilder(htmlText.substring(currentTagEndIndex));
+							resultStr+=htmlText.substring(0,currentTagEndIndex);
+							htmlText.delete(0,currentTagEndIndex);
 						}
 					}else{
 						if(currentTagMatcher.find()){
 							int currentTagEndIndex = currentTagMatcher.end();
-							resultStr+=htmlText.substring(0,currentTagEndIndex-1);
-							htmlText=new StringBuilder(htmlText.substring(currentTagEndIndex));
+							resultStr+=htmlText.substring(0,currentTagEndIndex);
+							htmlText.delete(0,currentTagEndIndex);
 						}
 					}
 				}

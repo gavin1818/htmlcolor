@@ -11,11 +11,13 @@ public class HtmlTag {
     private static final HashMap<String, String> colorHashMap;
     static{
         colorHashMap = new HashMap<String, String>();
-        colorHashMap.put("html","redhtml");
+        colorHashMap.put("html","red");
         colorHashMap.put("head","yellowhead");
         colorHashMap.put("title","greentitle");
         colorHashMap.put("body","turquoisebody");
         colorHashMap.put("h1","darkgreenh1");
+        colorHashMap.put("p","c_p");
+        colorHashMap.put("br","c_br");
     }
     /**
      * Constructs an HTML "opening" tag with the given element (e.g. "table").
@@ -23,7 +25,6 @@ public class HtmlTag {
      */
     public HtmlTag(String element) {
         this( element, true );
-        constructColorMatch();
     }
 
     /**
@@ -35,7 +36,6 @@ public class HtmlTag {
     public HtmlTag(String element, boolean isOpenTag) {
         this.element = element.toLowerCase();
         this.isOpenTag = isOpenTag;
-        constructColorMatch();
     }
 
     /**
