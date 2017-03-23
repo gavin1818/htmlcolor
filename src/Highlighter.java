@@ -57,23 +57,19 @@ public class Highlighter {
 				its conresponding closing tag still havent be processd. so we use the HtmlTag nextTag to parse it.
 				*/		
 				myStack.pop();
-				if(!tagQueue.isEmpty()){
+				if(!tagQueue.isEmpty()&&currentTagMatcher.find()){
 					HtmlTag nextTag = tagQueue.peek();
 					/*if the nextTag is closing tag, find the last index of the currentTag, becuase
 					the nextTag's corresponding color tag will be insert after the currentTag. */
-					if(!nextTag.isOpenTag()){
-						if(currentTagMatcher.find()){
+					if(!nextTag.isOpenTag()) {
 							int currentTagEndIndex = currentTagMatcher.end();
 							htmlText.insert(currentTagEndIndex,myStack.peek().colorMatch());
 							resultStr.append(htmlText.substring(0,currentTagEndIndex+myStack.peek().colorMatch().length()));
 							htmlText.delete(0,currentTagEndIndex+myStack.peek().colorMatch().length());
-						}
 					}else{
-						if(currentTagMatcher.find()){
 							int currentTagEndIndex = currentTagMatcher.end();
 							resultStr.append(htmlText.substring(0,currentTagEndIndex));
 							htmlText.delete(0,currentTagEndIndex);
-						}
 					}
 				//if current tag is the last one.
 				}else{
