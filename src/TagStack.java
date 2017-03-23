@@ -4,7 +4,6 @@ import java.util.EmptyStackException;
 public class TagStack {
     // An ArrayList to hold HtmlTag objects.
     private ArrayList<HtmlTag> stack_internal;
-
     public int StackSize; // monitor size of stack
 
     /*

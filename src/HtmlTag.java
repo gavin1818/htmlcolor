@@ -10,6 +10,7 @@ public class HtmlTag {
     private final boolean isOpenTag;
     private static final HashMap<String, String> colorHashMap;
     static{
+        //define the tags' color.
         colorHashMap = new HashMap<String, String>();
         colorHashMap.put("html","red");
         colorHashMap.put("head","yellow");
