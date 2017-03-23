@@ -20,7 +20,7 @@ public class Highlighter {
     	while(!tagQueue.isEmpty()){
     		//tagQueue contains all tags(open,close,selfclose) from tokenized html.
     		HtmlTag currentTag=tagQueue.poll();
-			String currentTagPattern = "<[ ]*[/]?[ ]*"+currentTag.getElement()+"[^>]*>";
+			String currentTagPattern = "<[ ]*[/]?[ ]*"+currentTag.getElement()+"[^>]*>[\n\t ]*";
 			Pattern currentTagPatternPattern = Pattern.compile(currentTagPattern);
 			Matcher currentTagMatcher = currentTagPatternPattern.matcher(htmlText);
     		if(currentTag.isOpenTag()){
@@ -33,13 +33,14 @@ public class Highlighter {
 					int currentTagStartIndex = currentTagMatcher.start();
 					htmlText.insert(currentTagStartIndex, currentTag.colorMatch());
 					//find index of the '>' in the current tag.
-					int currentTagEndIndex = currentTagMatcher.end();
-					resultStr+=htmlText.substring(0,currentTagEndIndex);
-					htmlText.delete(0,currentTagEndIndex);
+					int currentTagEndIndex = currentTagMatcher.end(); //end() return the index of the matcher last+1; 
+					resultStr+=htmlText.substring(0,currentTagEndIndex+currentTag.colorMatch().length());//substring(): The ending index is exclusive.
+					htmlText.delete(0,currentTagEndIndex+currentTag.colorMatch().length());//delete():The ending index is exclusive.
 					/*find the next tag's '>', and add the string before the '>' into resultStr, 
 					and remove it from htmlText */
+					//find the next tag's index, move all text sequnece before the tag into the resultStr.
 					if(!tagQueue.isEmpty()){
-						HtmlTag nextTag = tagQueue.peek();//gai
+						HtmlTag nextTag = tagQueue.peek();
 	    				String nextTagPattern = "<[ ]*[/]?[ ]*"+nextTag.getElement()+"[^>]*>";
 						Pattern nextTagPatternPattern = Pattern.compile(nextTagPattern);
 						Matcher nextTagMatcher = nextTagPatternPattern.matcher(htmlText);
@@ -65,9 +66,9 @@ public class Highlighter {
 							int currentTagEndIndex = currentTagMatcher.end();
 							//insert color tag right after the '>' of currentTag.
 							//String str =  currentTag.isOpenTag()?"Opne"+myStack.peek().colorMatch():"Closeing"+myStack.peek().colorMatch();
-							htmlText.insert(currentTagEndIndex,myStack.peek().colorMatch());//issue!
-							resultStr+=htmlText.substring(0,currentTagEndIndex);
-							htmlText.delete(0,currentTagEndIndex);
+							htmlText.insert(currentTagEndIndex,myStack.peek().colorMatch());
+							resultStr+=htmlText.substring(0,currentTagEndIndex+myStack.peek().colorMatch().length());
+							htmlText.delete(0,currentTagEndIndex+myStack.peek().colorMatch().length());
 						}
 					}else{
 						if(currentTagMatcher.find()){

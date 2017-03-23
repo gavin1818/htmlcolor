@@ -12,12 +12,12 @@ public class HtmlTag {
     static{
         colorHashMap = new HashMap<String, String>();
         colorHashMap.put("html","red");
-        colorHashMap.put("head","yellowhead");
-        colorHashMap.put("title","greentitle");
-        colorHashMap.put("body","turquoisebody");
-        colorHashMap.put("h1","darkgreenh1");
-        colorHashMap.put("p","c_p");
-        colorHashMap.put("br","c_br");
+        colorHashMap.put("head","yellow");
+        colorHashMap.put("title","green");
+        colorHashMap.put("body","turquois");
+        colorHashMap.put("h1","darkgreen");
+        colorHashMap.put("p","darkgray");
+        colorHashMap.put("br","pink");
     }
     /**
      * Constructs an HTML "opening" tag with the given element (e.g. "table").
